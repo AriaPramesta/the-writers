@@ -1,12 +1,12 @@
-type writer = {
+type Writer = {
   id: number;
   name: string;
-  birthDate: string;
-  country: string;
-  popularBook: string;
+  birthDate?: string;
+  country?: string;
+  popularBook?: string;
 };
 
-export const dataWriters: writer[] = [
+export const dataWriters: Writer[] = [
   {
     id: 1,
     name: "Kahlil Gibran",
