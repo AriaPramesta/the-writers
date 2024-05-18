@@ -45,4 +45,25 @@ app.post("/writers", async (c) => {
   return c.json({ writer: newWriter });
 });
 
+app.delete("/writers", (c) => {
+  writers = [];
+
+  return c.json({ message: "All writers have been deleted" });
+});
+
+app.delete("/writers/:id", (c) => {
+  const id = Number(c.req.param("id"));
+  const writer = writers.find((writer) => writer.id === id);
+
+  if (!writer) {
+    c.status(404);
+    return c.json({ message: "Writer not found" });
+  }
+
+  const updatedWriters = writers.filter((writer) => writer.id !== id);
+  writers = updatedWriters;
+
+  return c.json({ message: `Writer id:${id} have been deleted` });
+});
+
 export default app;
