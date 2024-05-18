@@ -21,7 +21,7 @@ app.get("/writers/:id", (c) => {
 
   if (!writer) {
     c.status(404);
-    return c.json({ message: "Writer not found" });
+    return c.json({ message: "Ops! Writer not found" });
   }
 
   return c.json(writer);
@@ -57,7 +57,7 @@ app.delete("/writers/:id", (c) => {
 
   if (!writer) {
     c.status(404);
-    return c.json({ message: "Writer not found" });
+    return c.json({ message: "Ops! Writer not found" });
   }
 
   const updatedWriters = writers.filter((writer) => writer.id !== id);
