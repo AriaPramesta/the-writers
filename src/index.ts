@@ -66,4 +66,38 @@ app.delete("/writers/:id", (c) => {
   return c.json({ message: `Writer id:${id} have been deleted` });
 });
 
+app.put("/writers/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+  const body = await c.req.json();
+  const writer = writers.find((writer) => writer.id === id);
+
+  if (!writer) {
+    c.status(404);
+    return c.json({ message: "Ops! Writer not found" });
+  }
+
+  const newWriter = {
+    ...writer,
+    name: body.name || writer.name,
+    birthDate: body.birthDate || writer.birthDate,
+    country: body.country || writer.country,
+    popularBook: body.popularBook || writer.popularBook,
+  };
+
+  const updatedWriters = writers.map((writer) => {
+    if (writer.id === id) {
+      return newWriter;
+    } else {
+      return writer;
+    }
+  });
+
+  writers = updatedWriters;
+
+  return c.json({
+    message: `Writer with id: ${id} have been updated`,
+    writer: newWriter,
+  });
+});
+
 export default app;
