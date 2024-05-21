@@ -100,4 +100,6 @@ app.put("/writers/:id", async (c) => {
   });
 });
 
+console.log("The Writers API is running");
+
 export default app;
