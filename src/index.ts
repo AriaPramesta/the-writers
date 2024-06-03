@@ -1,32 +1,28 @@
 import { Hono } from "hono";
 
 import { Writer, dataWriters } from "./data/writers.ts";
-import { client } from "./lib/db.ts";
+import { prisma } from "./lib/db.ts";
 
-let writersArray = dataWriters;
+// let writersArray = dataWriters;
 
 const app = new Hono();
-
-await client.connect();
 
 app.get("/", (c) => {
   return c.json({ message: "Welcome to The Writers!" });
 });
 
 app.get("/writers", async (c) => {
-  const res = await client.query("SELECT * FROM writers");
-  const writers = res.rows as Writer[];
-  console.log(writers);
+  const writers = await prisma.writer.findMany();
+
   return c.json(writers);
 });
 
 app.get("/writers/:id", async (c) => {
   const id = Number(c.req.param("id"));
 
-  const res = await client.query(`SELECT * FROM writers WHERE id  = ${id}`);
-  console.log({ res: JSON.stringify(res) });
-
-  const writer = res.rows[0] as Writer;
+  const writer = await prisma.writer.findUnique({
+    where: { id },
+  });
 
   if (!writer) {
     c.status(404);
@@ -39,73 +35,55 @@ app.get("/writers/:id", async (c) => {
 app.post("/writers", async (c) => {
   const body = await c.req.json();
 
-  const nextId = writersArray[writersArray.length - 1].id + 1;
-
-  const newWriter = {
-    id: nextId,
+  const dataWriter = {
     name: body.name,
-    birthDate: body.birthDate,
-    country: body.country,
-    popularBook: body.popularBook,
   };
 
-  writersArray = [...writersArray, newWriter];
+  const writer = await prisma.writer.create({
+    data: dataWriter,
+  });
 
-  return c.json({ writer: newWriter });
+  return c.json({ writer });
 });
 
-app.delete("/writers", (c) => {
-  writersArray = [];
+app.delete("/writers", async (c) => {
+  const result = await prisma.writer.deleteMany();
 
-  return c.json({ message: "All writers have been deleted" });
+  return c.json({
+    message: "All writers have been deleted",
+    result,
+  });
 });
 
-app.delete("/writers/:id", (c) => {
+app.delete("/writers/:id", async (c) => {
   const id = Number(c.req.param("id"));
-  const writer = writersArray.find((writer) => writer.id === id);
 
-  if (!writer) {
-    c.status(404);
-    return c.json({ message: "Ops! Writer not found" });
-  }
+  const deletedWriter = await prisma.writer.delete({
+    where: { id },
+  });
 
-  const updatedWriters = writersArray.filter((writer) => writer.id !== id);
-  writersArray = updatedWriters;
-
-  return c.json({ message: `Writer id:${id} have been deleted` });
+  return c.json({
+    message: `Writer id:${id} have been deleted`,
+    deletedWriter,
+  });
 });
 
 app.put("/writers/:id", async (c) => {
   const id = Number(c.req.param("id"));
   const body = await c.req.json();
-  const writer = writersArray.find((writer) => writer.id === id);
 
-  if (!writer) {
-    c.status(404);
-    return c.json({ message: "Ops! Writer not found" });
-  }
-
-  const newWriter = {
-    ...writer,
-    name: body.name || writer.name,
-    birthDate: body.birthDate || writer.birthDate,
-    country: body.country || writer.country,
-    popularBook: body.popularBook || writer.popularBook,
+  const dataWriter = {
+    name: body.name,
   };
 
-  const updatedWriters = writersArray.map((writer) => {
-    if (writer.id === id) {
-      return newWriter;
-    } else {
-      return writer;
-    }
+  const updatedWriter = await prisma.writer.update({
+    where: { id },
+    data: dataWriter,
   });
-
-  writersArray = updatedWriters;
 
   return c.json({
     message: `Writer with id: ${id} have been updated`,
-    writer: newWriter,
+    updatedWriter,
   });
 });
 

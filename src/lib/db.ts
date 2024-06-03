@@ -1,13 +1,17 @@
-import "dotenv/config";
-import * as pg from "pg";
+import { PrismaClient } from "@prisma/client";
 
-const { Client } = pg;
-export const client = new Client({
-  connectionString: process.env.DATABASE_URL,
+export const prisma = new PrismaClient();
 
-  //   host: process.env.POSTGRES_HOST,
-  //   user: process.env.POSTGRES_USER,
-  //   password: process.env.POSTGRES_PASSWORD,
-  //   database: process.env.POSTGRES_DB,
-  //   port: Number(process.env.POSTGRES_PORT),
-});
+async function main() {
+  // ... you will write your Prisma Client queries here
+}
+
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
