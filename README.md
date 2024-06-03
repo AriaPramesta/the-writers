@@ -11,6 +11,10 @@
 | `/writers/:id` | `DELETE` | Delete writer by id |
 | `/writers/:id` | `PUT`    | Update writer by id |
 
+## Database Design/Schema/ERD
+
+![ERD](./assets/the-writer-erd.svg)
+
 ## Getting Started
 
 To install dependencies:
