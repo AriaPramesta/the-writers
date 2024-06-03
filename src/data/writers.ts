@@ -1,7 +1,7 @@
-type Writer = {
+export type Writer = {
   id: number;
   name: string;
-  birthDate?: string;
+  birthDate?: Date;
   country?: string;
   popularBook?: string;
 };
@@ -10,21 +10,21 @@ export const dataWriters: Writer[] = [
   {
     id: 1,
     name: "Kahlil Gibran",
-    birthDate: "6-January-1883",
+    birthDate: new Date("1883-01-06"),
     country: "America",
     popularBook: "The Prophet",
   },
   {
     id: 2,
     name: "Franz Kafka",
-    birthDate: "3-July-1883",
+    birthDate: new Date("1883-07-03"),
     country: "Austria",
     popularBook: "The Metamorphosis",
   },
   {
     id: 3,
     name: "Pramoedya Ananta Toer",
-    birthDate: "6-February-1925",
+    birthDate: new Date("1925-02-06"),
     country: "Indonesia",
     popularBook: "Tetralogi Buru",
   },
