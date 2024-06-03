@@ -14,6 +14,11 @@ datasource db {
 }
 
 model Writer {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(100)
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  birthDate   DateTime?
+  country     String?   @db.VarChar(100)
+  popularBook String?   @db.VarChar(100)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
 }
