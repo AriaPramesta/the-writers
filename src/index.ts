@@ -1,11 +1,16 @@
 import { Hono } from "hono";
 
-import { Writer, dataWriters } from "./data/writers.ts";
+import { dataWriters } from "./data/writers.ts";
 import { prisma } from "./lib/db.ts";
 
-// let writersArray = dataWriters;
-
 const app = new Hono();
+
+app.post("/writers/seed", async (c) => {
+  const writers = await prisma.writer.createMany({
+    data: dataWriters,
+  });
+  return c.json(writers);
+});
 
 app.get("/", (c) => {
   return c.json({ message: "Welcome to The Writers!" });
@@ -36,7 +41,10 @@ app.post("/writers", async (c) => {
   const body = await c.req.json();
 
   const dataWriter = {
-    name: body.name,
+    name: String(body.name),
+    birthDate: String(body.birthDate),
+    country: String(body.country),
+    popularBook: String(body.popularBook),
   };
 
   const writer = await prisma.writer.create({
@@ -73,7 +81,10 @@ app.put("/writers/:id", async (c) => {
   const body = await c.req.json();
 
   const dataWriter = {
-    name: body.name,
+    name: String(body.name),
+    birthDate: String(body.birthDate),
+    country: String(body.country),
+    popularBook: String(body.popularBook),
   };
 
   const updatedWriter = await prisma.writer.update({

@@ -1,12 +1,8 @@
-export type Writer = {
-  id: number;
-  name: string;
-  birthDate?: Date;
-  country?: string;
-  popularBook?: string;
-};
+import { type Writer } from "@prisma/client";
 
-export const dataWriters: Writer[] = [
+export type DataWriter = Omit<Writer, "createdAt" | "updatedAt">;
+
+export const dataWriters: DataWriter[] = [
   {
     id: 1,
     name: "Kahlil Gibran",
